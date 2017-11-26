@@ -1,16 +1,7 @@
 <?php
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 namespace app\models\commands;
 
-/**
- * Description of NmapCommand
- *
- * @author dv4mp1r3
- */
 class NmapCommand extends AbstractCommand
 {
     /**
@@ -18,6 +9,8 @@ class NmapCommand extends AbstractCommand
      * @var string 
      */
     public $host;
+    
+    public $domain;
     
     public function postExecute()
     {
@@ -28,6 +21,7 @@ class NmapCommand extends AbstractCommand
                 if (strpos($line, 'open') && strpos($line, 'http'))
                 {
                     $this->debugPrint("on $this->host found new HTTP server");
+                    $this->pushPhpmyadminChecker(false, $this->domain);
                 }   
             }            
             else if (strpos($line, '443/tcp') !== false)
@@ -35,9 +29,22 @@ class NmapCommand extends AbstractCommand
                 if (strpos($line, 'open') && strpos($line, 'https'))
                 {
                     $this->debugPrint("on $this->host found new HTTPS server");
+                    $this->pushPhpmyadminChecker(true, $this->domain);
                 }   
             }
         }
+    }
+    
+    protected function pushPhpmyadminChecker($isHttps, $domain)
+    {
+        $extra = ['isHttps' => $isHttps];
+        $message = $this->publisher->buildMessage(
+                $this->taskId, 
+                $domain, 
+                PhpmyadminCommand::getCommandName(), 
+                $extra
+            );
+        $this->publisher->publishMessage($message, self::RABBIT_EXCHANGE_DEFAULT);
     }
 
     public function preExecute()

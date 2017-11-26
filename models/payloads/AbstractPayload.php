@@ -9,6 +9,21 @@ abstract class AbstractPayload
 {   
     
     protected $queue;
+    
+    /**
+     *
+     * @var PhpAmqpLib\Connection\AMQPStreamConnection; 
+     */
+    protected $connection;
+    
+    /**
+     * 
+     * @param PhpAmqpLib\Connection\AMQPStreamConnection; $connection
+     */
+    public function setConnection($connection)
+    {
+        $this->connection = $connection;
+    }
 
     /**
      * 

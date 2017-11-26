@@ -29,7 +29,7 @@ class AMQPWorker extends Model
             throw new \Exception('Wrong payload parent class');
         }
         
-        $this->payload = $payload;     
+        $this->payload = $payload; 
         
         $this->tag = rand(0, 100);   
         
@@ -57,7 +57,8 @@ class AMQPWorker extends Model
         //подключение к очереди
         $this->connection->set_close_on_destruct(false);
         $this->channel = $this->connection->channel();
-        $this->channel->basic_qos(0, 1, false);
+        $this->channel->basic_qos(0, 1, false);        
+        $this->payload->setConnection($this->connection);
     }
     
     public function listen($queue)
@@ -67,7 +68,7 @@ class AMQPWorker extends Model
                 false, 
                 false, 
                 false, 
-                [$this->payload, 'execute']);
+                [$this->payload, commands\AbstractCommand::RABBIT_QUEUE_DEFAULT]);
         while (count($this->channel->callbacks)) 
         {
             $this->channel->wait();

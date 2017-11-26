@@ -145,8 +145,7 @@ class Task extends \yii\db\ActiveRecord
     {
         $rabbitConnectionData = Yii::$app->params['rabbit'];
   
-        $exchange = 'task';
-        $queue = 'execute'; //$rabbitConnectionData['queue'];
+        $exchange = commands\AbstractCommand::RABBIT_EXCHANGE_DEFAULT;
         $connection = new AMQPStreamConnection(
             $rabbitConnectionData['host'], 
             $rabbitConnectionData['port'], 
@@ -155,13 +154,13 @@ class Task extends \yii\db\ActiveRecord
             $rabbitConnectionData['vhost']);
         $channel = $connection->channel();
         //$channel->queue_declare($queue, false, true, false, false);
-        
+        $publisher = new AMQPPublisher($connection);
         $domains = $this->readDomains();
         $domainsCount = 0;
         foreach ($domains as $key => $domain) 
-        {
-            $message = $this->buildRabbitMessage($domain, 'host');           
-            $channel->basic_publish($message, $exchange);
+        { 
+            $message = $publisher->buildMessage($this->id, $domain, commands\HostCommand::getCommandName());
+            $publisher->publishMessage($message, $exchange);
             $domainsCount++;
         }
         

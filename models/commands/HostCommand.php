@@ -28,15 +28,13 @@ class HostCommand extends AbstractCommand
             {
                 $ip = trim(str_replace($searchString, '', $line));
                 $this->debugPrint("IP FOUND: $ip");   
-                
-                $message = [
-                    'taskId' => $this->taskId,
-                    'host' => $ip,
-                    'command' => NmapCommand::getCommandName(),
-                    'extra' => null,
-                ];
-                
-                $this->dropMessageTo($message, AbstractCommand::RABBIT_EXCHANGE_DEFAULT);
+                $message = $this->publisher->buildMessage(
+                        $this->taskId, 
+                        $this->domain, 
+                        NmapCommand::getCommandName(), 
+                        ['host' => $ip]
+                    );                
+                $this->publisher->publishMessage($message, AbstractCommand::RABBIT_EXCHANGE_DEFAULT);
             }
         }
     }
