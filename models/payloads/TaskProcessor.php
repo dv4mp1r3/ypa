@@ -26,12 +26,12 @@ class TaskProcessor extends AbstractPayload
             $msgBody = json_decode($message->body);
             if (!property_exists($msgBody, 'command'))
             {
-                throw new Exception('property command does not exists in message');
+                throw new \Exception('property command does not exists in message');
             }
             
             if (!property_exists($msgBody, 'taskId'))
             {
-                throw new Exception('property taskId does not exists in message');
+                throw new \Exception('property taskId does not exists in message');
             }
             
             $cmd = ucfirst($msgBody->command);
