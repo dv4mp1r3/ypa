@@ -12,7 +12,7 @@ class AMQPWorker extends Model
 {
     const CONFIG_INDEX_HOST = 'vhost',
         CONFIG_INDEX_QUEUE = 'queue';
-    
+        
     protected $vHost = null;
     protected $queue = null;
     protected $tag;
@@ -28,7 +28,7 @@ class AMQPWorker extends Model
         {
             throw new \Exception('Wrong payload parent class');
         }
-        
+                
         $this->payload = $payload; 
         
         $this->tag = rand(0, 100);   
@@ -44,7 +44,7 @@ class AMQPWorker extends Model
             $rabbitConnectionData['port'], 
             $rabbitConnectionData['user'], 
             $rabbitConnectionData['password'], 
-            $rabbitConnectionData['vhost'], 
+            $rabbitConnectionData[self::CONFIG_INDEX_HOST], 
             $insist = false,
             $login_method = 'AMQPLAIN',
             $login_response = null,
@@ -61,8 +61,13 @@ class AMQPWorker extends Model
         $this->payload->setConnection($this->connection);
     }
     
-    public function listen($queue)
+    /**
+     * 
+     * @param string $queue
+     */
+    public function listen($queue = null)
     {
+        $this->queue = $queue;
         $this->channel->basic_consume($queue, $this->getTag(), 
                 false, 
                 false, 

@@ -25,25 +25,46 @@ class RabbitController extends Controller
         $this->loop($name);
     }
     
-    public function actionTask()
+    /**
+     * Выполение задачи из очереди
+     * @param string $queue
+     */
+    public function actionTask($queue = null)
     {
         $name = $this->getQueueName(__FUNCTION__);
-        $this->loop($name);
+        $this->loop($name, $queue);
     }
     
+    /**
+     * Получение имени очереди для выполняемой задачи
+     * @param string $functionName
+     * @return string
+     */
     protected function getQueueName($functionName)
     {
         return str_replace('action', '', $functionName);        
     }
     
-    protected function loop($payloadName)
+    /**
+     * Цикл обработки сообщений воркером
+     * @param string $payloadName Название класса из неймспейса app\models\payloads
+     * инстанс класса AbstractPayload
+     * @see app\models\payloads\AbstractPayload
+     * @param string $queue название очереди (если не используется, то берется из конфига)
+     */
+    protected function loop($payloadName, $queue = null)
     {
         $classname = "app\\models\\payloads\\{$payloadName}Processor";
         $payload = new $classname(lcfirst($payloadName));
         $this->w = new AMQPWorker($payload);
         
         $this->w->connect();
-        $this->w->listen('execute');
+        if (empty($queue))
+        {
+            $queue = \Yii::$app->params['rabbit']['queue'];
+        }
+    
+        $this->w->listen($queue);
     }
     
     public function __destruct()

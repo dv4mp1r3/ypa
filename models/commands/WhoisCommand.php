@@ -23,4 +23,9 @@ class WhoisCommand extends AbstractCommand
     {
         
     }
+    
+    public static function getCommandName()
+    {
+        return 'whois';
+    }
 }

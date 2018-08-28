@@ -30,3 +30,4 @@ phpunit.phar
 runtime
 tests
 web/assets
+/config/cookieValidationKey.php

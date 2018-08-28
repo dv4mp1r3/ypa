@@ -7,11 +7,19 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use app\models\Notification;
 use Yii;
 use app\models\Task;
+use app\models\AMQPPublisher;
 
 abstract class AbstractCommand
 {
     const RABBIT_QUEUE_DEFAULT = 'execute';
     const RABBIT_EXCHANGE_DEFAULT = 'task';
+    
+    protected static $RABBIT_POSSIBLE_VHOSTS = [
+        '/ypa',
+        '/ypa-high',
+        '/ypa-medium',
+        '/ypa-low',
+    ];
     
     protected $output;
     private $originalCommand;
@@ -26,7 +34,12 @@ abstract class AbstractCommand
      */
     protected $publisher;
 
-    public function __construct($taskId, $connection = null)
+    /**
+     * 
+     * @param integer $taskId
+     * @param AMQPStreamConnection $connection
+     */
+    public function __construct($taskId, $connection = null, $queue = null)
     {
         $this->taskId = $taskId;
         if ($connection instanceof AMQPStreamConnection)

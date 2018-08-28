@@ -2,10 +2,8 @@
 
 namespace app\models\payloads;
 
-use app\models\commands\HostCommand;
-use app\models\commands\NmapCommand;
-use app\models\commands\WpscanCommand;
-use app\models\commands\PhpmyadminCommand;
+
+use app\models\commands;
 
 class TaskProcessor extends AbstractPayload
 {
@@ -40,19 +38,19 @@ class TaskProcessor extends AbstractPayload
             
             switch($msgBody->command)
             {
-                case HostCommand::getCommandName():
+                case commands\HostCommand::getCommandName():
                     $cmd->domain = $msgBody->domain;
                     break;
-                case NmapCommand::getCommandName():
+                case commands\NmapCommand::getCommandName():
                     $cmd->host = $msgBody->extra->host;
                     $cmd->domain = $msgBody->domain;
                     break;
-                case 'whois':
+                case commands\WhoisCommand::getCommandName();
                     break;
-                case WpscanCommand::getCommandName():
+                case commands\WpscanCommand::getCommandName():
                     $cmd->domain = $msgBody->domain;
                     break;
-                case PhpmyadminCommand::getCommandName():
+                case commands\PhpmyadminCommand::getCommandName():
                     $cmd->isHttps = $msgBody->extra->isHttps;
                     $cmd->domain = $msgBody->domain;
                     break;

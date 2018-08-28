@@ -1,16 +1,7 @@
 <?php
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 namespace app\models\commands;
 
-/**
- * Description of HostCommand
- *
- * @author dv4mp1r3
- */
 class HostCommand extends AbstractCommand
 {
     /**
@@ -34,7 +25,9 @@ class HostCommand extends AbstractCommand
                         NmapCommand::getCommandName(), 
                         ['host' => $ip]
                     );                
-                $this->publisher->publishMessage($message, AbstractCommand::RABBIT_EXCHANGE_DEFAULT);
+                $this->publisher->publishMessage($message, 
+                    AbstractCommand::RABBIT_EXCHANGE_DEFAULT, 
+                    \app\models\AMQPPublisher::ROUTING_KEY_DISCOVER_TOOL);
             }
         }
     }
