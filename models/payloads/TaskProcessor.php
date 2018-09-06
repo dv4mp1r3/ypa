@@ -10,7 +10,7 @@ class TaskProcessor extends AbstractPayload
     
     public function afterExecute($data)
     {
-//        /echo __METHOD__." called \n";
+
     }
     
     /**
@@ -34,6 +34,9 @@ class TaskProcessor extends AbstractPayload
             
             $cmd = ucfirst($msgBody->command);
             $commandClassname = "app\\models\\commands\\{$cmd}Command";
+            /**
+             * @var commands\AbstractCommand cmd
+             */
             $cmd = new $commandClassname($msgBody->taskId, $this->connection);
             
             switch($msgBody->command)
@@ -54,10 +57,17 @@ class TaskProcessor extends AbstractPayload
                     $cmd->isHttps = $msgBody->extra->isHttps;
                     $cmd->domain = $msgBody->domain;
                     break;
+                case commands\PingCommand::getCommandName():
+                    $cmd->previousCommand = $msgBody->extra->previousCommand;
+                    $cmd->domain = $msgBody->domain;
+                    break;
+                case commands\SubfinderCommand::getCommandName():
+                    $cmd->domain = $msgBody->domain;
+                    break;
                 default: 
                     throw new \Exception('Unknown command '.$msgBody->command);
             }
-            
+
             $cmd->run();                      
         } 
         catch (\Exception $ex) 

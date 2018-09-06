@@ -116,10 +116,24 @@ abstract class AbstractCommand
         throw new \Exception($n->getErrorsAsString());
 
     }
-    
+
+    /**
+     * @param string $line
+     * @param string $substr
+     * @return bool
+     */
     protected function lineBeginsAt($line, $substr)
     {
-        return strpos($line, $substr) == 0;
+        return strpos($line, $substr) === 0;
+    }
+
+    /**
+     * @param string $substr
+     * @return bool
+     */
+    protected function outputContains($substr)
+    {
+        return strpos($this->output, $substr) !== false;
     }
     
     /**

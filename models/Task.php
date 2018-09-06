@@ -159,7 +159,12 @@ class Task extends \yii\db\ActiveRecord
         $domainsCount = 0;
         foreach ($domains as $key => $domain) 
         { 
-            $message = $publisher->buildMessage($this->id, $domain, commands\HostCommand::getCommandName());
+            $message = $publisher->buildMessage(
+                $this->id,
+                $domain,
+                commands\PingCommand::getCommandName(),
+                ['previousCommand' => null]
+            );
             $publisher->publishMessage($message, $exchange, AMQPPublisher::ROUTING_KEY_HOST_ADDED);
             $domainsCount++;
         }
