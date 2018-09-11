@@ -29,7 +29,7 @@ class TaskProcessor extends AbstractPayload
             
             if (!property_exists($msgBody, 'taskId'))
             {
-                throw new \Exception('property taskId does not exists in message');
+                 throw new \Exception('property taskId does not exists in message');
             }
             
             $cmd = ucfirst($msgBody->command);
@@ -64,6 +64,11 @@ class TaskProcessor extends AbstractPayload
                 case commands\SubfinderCommand::getCommandName():
                     $cmd->domain = $msgBody->domain;
                     break;
+                case commands\CmsCommand::getCommandName():
+                    $cmd->domain = $msgBody->domain;
+                    $cmd->port = $msgBody->extra->port;
+                    $cmd->protocol = $msgBody->extra->protocol;
+                    $cmd->path = $msgBody->extra->path;
                 default: 
                     throw new \Exception('Unknown command '.$msgBody->command);
             }

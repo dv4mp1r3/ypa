@@ -9,19 +9,16 @@ use DetectCMS\DetectCMS;
 
 class InternalCommandsController extends Controller
 {
-    const PORT_DEFAULT_HTTPS = 443;
-    const PORT_DEFAULT_HTTP = 80;
-
     /**
      * Поиск CMS для домена
-     * TODO: глянуть сорсы, возможен ли поиск по нестандартному пути
-     * TODO: поиск на нестандартном порту
      * @param string $domain
      * @param int $port
+     *
+     * Название CMS в случае если найдена, пустой вывод в противном случае
      */
-    public function actionCmsdetect($domain, $port = self::PORT_DEFAULT_HTTPS)
+    public function actionCmsdetect($url)
     {
-        $cms = new DetectCMS($domain);
+        $cms = new DetectCMS($url);
         if ($cms->check())
         {
             $result = $cms->getResult();
