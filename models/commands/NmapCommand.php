@@ -4,6 +4,9 @@ namespace app\models\commands;
 
 class NmapCommand extends AbstractCommand
 {
+    const PROTOCOL_HTTP = 'http';
+    const PROTOCOL_HTTPS = 'https';
+
     /**
      *
      * @var string 
@@ -16,25 +19,54 @@ class NmapCommand extends AbstractCommand
     {
         $lines = explode("\n", $this->output);
         foreach ($lines as &$line) {
-            if (strpos($line, '80/tcp') !== false)
+            $port = intval($line);
+            if (!$port)
             {
-                if (strpos($line, 'open') && strpos($line, 'http'))
+                continue;
+            }
+
+            if (strpos($line, '80/tcp') !== false || strpos($line, '443/tcp') !== false)
+            {
+                if (strpos($line, self::PROTOCOL_HTTPS))
                 {
                     $this->debugPrint("on $this->host found new HTTP server");
-                    $this->pushPhpmyadminChecker(false, $this->domain);
-                }   
-            }            
-            else if (strpos($line, '443/tcp') !== false)
-            {
-                if (strpos($line, 'open') && strpos($line, 'https'))
+                    $this->pushCms(self::PROTOCOL_HTTPS, $this->domain, $port);
+                }
+                else if (strpos($line, self::PROTOCOL_HTTP))
                 {
                     $this->debugPrint("on $this->host found new HTTPS server");
-                    $this->pushPhpmyadminChecker(true, $this->domain);
-                }   
+                    $this->pushCms(self::PROTOCOL_HTTP, $this->domain, $port);
+                }
             }
         }
     }
-    
+
+    /**
+     * @param string $protocol
+     * @param string $domain
+     * @param string $port
+     */
+    protected function pushCms($protocol, $domain, $port)
+    {
+        $extra = [
+            'protocol' => $protocol,
+            'domain' => $domain,
+            'path' => '',
+            'port' => $port
+        ];
+        $message = $this->publisher->buildMessage(
+            $this->taskId,
+            $domain,
+            PhpmyadminCommand::getCommandName(),
+            $extra
+        );
+        $this->publisher->publishMessage($message, self::RABBIT_EXCHANGE_DEFAULT);
+    }
+
+    /**
+     * @param boolean $isHttps
+     * @param string $domain
+     */
     protected function pushPhpmyadminChecker($isHttps, $domain)
     {
         $extra = ['isHttps' => $isHttps];
