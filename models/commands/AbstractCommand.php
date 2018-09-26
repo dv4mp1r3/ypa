@@ -39,13 +39,29 @@ abstract class AbstractCommand
      * @param integer $taskId
      * @param AMQPStreamConnection $connection
      */
-    public function __construct($taskId, $connection = null, $queue = null)
+    public function __construct($connection = null, $queue = null)
     {
-        $this->taskId = $taskId;
         if ($connection instanceof AMQPStreamConnection)
         {
             $this->publisher = new \app\models\AMQPPublisher($connection);
         }      
+    }
+
+    /**
+     * инициализация свойств из данных в сообщении из очереди
+     * @param stdClass $msgBody
+     */
+    public function initParameters($msgBody)
+    {
+        // опциональный параметр, которого может не быть в команде
+        if (property_exists($msgBody, 'domain'))
+        {
+            $this->domain = $msgBody->domain;
+        }
+
+        // обязательный параметр, любая команда
+        // должна быть привязана к задаче
+        $this->taskId = $msgBody->taskId;
     }
     
     public function run()

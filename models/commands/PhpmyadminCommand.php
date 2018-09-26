@@ -30,6 +30,12 @@ class PhpmyadminCommand extends AbstractCommand
         }
     }
 
+    public function initParameters($msgBody)
+    {
+        parent::initParameters($msgBody);
+        $this->isHttps = $msgBody->extra->isHttps;
+    }
+
     public function preExecute()
     {
         $domain = $this->domain;

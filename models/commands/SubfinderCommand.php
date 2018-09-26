@@ -23,10 +23,7 @@ class SubfinderCommand extends AbstractCommand
 
     public function preExecute()
     {
-        if (property_exists($this, 'domain'))
-        {
-            $this->setCommand($this->getCommandName()." -d $this->domain");
-        }
+        $this->setCommand("subfinder -d $this->domain");
     }
 
     public function postExecute()
@@ -70,8 +67,8 @@ class SubfinderCommand extends AbstractCommand
             $message = $this->publisher->buildMessage(
                 $this->taskId,
                 $domain,
-                PingCommand::getCommandName(),
-                ['previousCommand' => self::getCommandName()]
+                PingCommand::class,
+                ['previousCommand' => self::class]
             );
             $this->publisher->publishMessage($message,
                 AbstractCommand::RABBIT_EXCHANGE_DEFAULT,

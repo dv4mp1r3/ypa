@@ -18,10 +18,7 @@ class PingCommand extends AbstractCommand
 
     public function preExecute()
     {
-        if (property_exists($this, 'domain'))
-        {
-            $this->setCommand($this->getCommandName()." {$this->domain} -c 1");
-        }
+        $this->setCommand("ping {$this->domain} -c 1");
     }
 
     public function postExecute()
@@ -30,6 +27,12 @@ class PingCommand extends AbstractCommand
         {
             $this->pushDomainToScan($this->domain);
         }
+    }
+
+    public function initParameters($msgBody)
+    {
+        parent::initParameters($msgBody);
+        $this->previousCommand = $msgBody->extra->previousCommand;
     }
 
     /**
@@ -43,8 +46,8 @@ class PingCommand extends AbstractCommand
          * Если домен найден ранее через subfinder то отправляем в nmap
          */
         $commandName = empty($this->previousCommand)
-            ? SubfinderCommand::getCommandName()
-            : NmapCommand::getCommandName();
+            ? SubfinderCommand::class
+            : NmapCommand::class;
         $message = $this->publisher->buildMessage(
             $this->taskId,
             $this->domain,

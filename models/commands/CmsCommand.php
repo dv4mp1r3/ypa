@@ -11,12 +11,24 @@ class CmsCommand extends AbstractCommand
     const PROTOCOL_HTTP = 'http';
     const PROTOCOL_HTTPS = 'https';
 
+    /**
+     * @var string
+     */
     public $domain;
 
+    /**
+     * @var string
+     */
     public $path;
 
+    /**
+     * @var string
+     */
     public $port;
 
+    /**
+     * @var string
+     */
     public $protocol;
 
     public function preExecute()
@@ -28,6 +40,14 @@ class CmsCommand extends AbstractCommand
             throw new \Exception('Empty dir/url variable. Command was interrupted');
         }
         $this->setCommand("php $dir/yii internal-commands/cmsdetect $url");
+    }
+
+    public function initParameters($msgBody)
+    {
+        parent::initParameters($msgBody);
+        $this->port = $msgBody->extra->port;
+        $this->protocol = $msgBody->extra->protocol;
+        $this->path =$msgBody->extra->path;
     }
 
     /**

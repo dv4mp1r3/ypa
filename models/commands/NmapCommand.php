@@ -12,7 +12,10 @@ class NmapCommand extends AbstractCommand
      * @var string 
      */
     public $host;
-    
+
+    /**
+     * @var string
+     */
     public $domain;
     
     public function postExecute()
@@ -57,10 +60,20 @@ class NmapCommand extends AbstractCommand
         $message = $this->publisher->buildMessage(
             $this->taskId,
             $domain,
-            PhpmyadminCommand::getCommandName(),
+            PhpmyadminCommand::class,
             $extra
         );
         $this->publisher->publishMessage($message, self::RABBIT_EXCHANGE_DEFAULT);
+    }
+
+    /**
+     * @param stdClass $msgBody
+     * @inheritdoc
+     */
+    public function initParameters($msgBody)
+    {
+        parent::initParameters($msgBody);
+        $this->host = $msgBody->host;
     }
 
     /**
@@ -73,7 +86,7 @@ class NmapCommand extends AbstractCommand
         $message = $this->publisher->buildMessage(
                 $this->taskId, 
                 $domain, 
-                PhpmyadminCommand::getCommandName(), 
+                PhpmyadminCommand::class,
                 $extra
             );
         $this->publisher->publishMessage($message, self::RABBIT_EXCHANGE_DEFAULT);

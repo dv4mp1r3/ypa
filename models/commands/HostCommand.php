@@ -22,7 +22,7 @@ class HostCommand extends AbstractCommand
                 $message = $this->publisher->buildMessage(
                         $this->taskId, 
                         $this->domain, 
-                        NmapCommand::getCommandName(), 
+                        NmapCommand::class,
                         ['host' => $ip]
                     );                
                 $this->publisher->publishMessage($message, 

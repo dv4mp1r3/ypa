@@ -31,48 +31,18 @@ class TaskProcessor extends AbstractPayload
             {
                  throw new \Exception('property taskId does not exists in message');
             }
-            
-            $cmd = ucfirst($msgBody->command);
-            $commandClassname = "app\\models\\commands\\{$cmd}Command";
+
+            if (!class_exists($msgBody->command))
+            {
+                throw new \Exception('Unknown command '.$msgBody->command);
+            }
+            $commandClassname = $msgBody->command;//"app\\models\\commands\\{$cmd}Command";
+
             /**
              * @var commands\AbstractCommand cmd
              */
-            $cmd = new $commandClassname($msgBody->taskId, $this->connection);
-            
-            switch($msgBody->command)
-            {
-                case commands\HostCommand::getCommandName():
-                    $cmd->domain = $msgBody->domain;
-                    break;
-                case commands\NmapCommand::getCommandName():
-                    $cmd->host = $msgBody->extra->host;
-                    $cmd->domain = $msgBody->domain;
-                    break;
-                case commands\WhoisCommand::getCommandName();
-                    break;
-                case commands\WpscanCommand::getCommandName():
-                    $cmd->domain = $msgBody->domain;
-                    break;
-                case commands\PhpmyadminCommand::getCommandName():
-                    $cmd->isHttps = $msgBody->extra->isHttps;
-                    $cmd->domain = $msgBody->domain;
-                    break;
-                case commands\PingCommand::getCommandName():
-                    $cmd->previousCommand = $msgBody->extra->previousCommand;
-                    $cmd->domain = $msgBody->domain;
-                    break;
-                case commands\SubfinderCommand::getCommandName():
-                    $cmd->domain = $msgBody->domain;
-                    break;
-                case commands\CmsCommand::getCommandName():
-                    $cmd->domain = $msgBody->domain;
-                    $cmd->port = $msgBody->extra->port;
-                    $cmd->protocol = $msgBody->extra->protocol;
-                    $cmd->path = $msgBody->extra->path;
-                default: 
-                    throw new \Exception('Unknown command '.$msgBody->command);
-            }
-
+            $cmd = new $commandClassname($this->connection);
+            $cmd->initParameters($msgBody);
             $cmd->run();                      
         } 
         catch (\Exception $ex) 

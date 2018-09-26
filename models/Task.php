@@ -162,7 +162,7 @@ class Task extends \yii\db\ActiveRecord
             $message = $publisher->buildMessage(
                 $this->id,
                 $domain,
-                commands\PingCommand::getCommandName(),
+                commands\PingCommand::class,
                 ['previousCommand' => null]
             );
             $publisher->publishMessage($message, $exchange, AMQPPublisher::ROUTING_KEY_HOST_ADDED);
