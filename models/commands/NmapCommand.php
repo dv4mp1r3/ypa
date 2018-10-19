@@ -33,15 +33,72 @@ class NmapCommand extends AbstractCommand
                 if (strpos($line, self::PROTOCOL_HTTPS))
                 {
                     $this->debugPrint("on $this->host found new HTTP server");
-                    $this->pushCms(self::PROTOCOL_HTTPS, $this->domain, $port);
+                    $this->addHeartbleederCommand($this->domain, $port);
+                    $this->addCmsCommand(self::PROTOCOL_HTTPS, $this->domain, $port);
                 }
                 else if (strpos($line, self::PROTOCOL_HTTP))
                 {
                     $this->debugPrint("on $this->host found new HTTPS server");
-                    $this->pushCms(self::PROTOCOL_HTTP, $this->domain, $port);
+                    $this->addCmsCommand(self::PROTOCOL_HTTP, $this->domain, $port);
                 }
             }
+            else if ((strpos($line, 'open') !== false || strpos($line, 'filtered') !== false)
+                && strpos($line, 'ssh') !== false)
+            {
+                $this->addHydraCommand('ssh', $this->domain, $port);
+            }
         }
+    }
+
+    /**
+     * Отправка в очередь задания для брута сервиса через thc hydra
+     * @param string $protocol
+     * @param string $address
+     * @param integer $port
+     * @param bool $useProxy использовать proxychains при работе
+     * @param null|string $userList полный путь к листу юзеров
+     * @param null|string $passList полный путь к листу с паролями
+     * @see https://github.com/vanhauser-thc/thc-hydra
+     */
+    protected function addHydraCommand($protocol, $address, $port, $useProxy = false, $userList = null, $passList = null)
+    {
+        $url = "$protocol://$address:$port";
+        $extra = [
+            'url' => $url,
+            'useProxy' => $useProxy,
+        ];
+        if (!empty($userList))
+        {
+            $extra['userList'] = $userList;
+        }
+        if (!empty($passList))
+        {
+            $extra['passList'] = $passList;
+        }
+
+        $message = $this->publisher->buildMessage(
+            $this->taskId,
+            $this->domain,
+            HydraCommand::class,
+            $extra
+        );
+        $this->publisher->publishMessage($message, self::RABBIT_EXCHANGE_DEFAULT);
+
+    }
+
+    /**
+     * @param string $domain
+     * @param integer|null $port
+     */
+    protected function addHeartbleederCommand($domain, $port = null)
+    {
+        $message = $this->publisher->buildMessage(
+            $this->taskId,
+            $domain,
+            HeartbleederCommand::class,
+            $port !== null ? ['port' => $port] : null
+            );
+        $this->publisher->publishMessage($message, self::RABBIT_EXCHANGE_DEFAULT);
     }
 
     /**
@@ -49,7 +106,7 @@ class NmapCommand extends AbstractCommand
      * @param string $domain
      * @param string $port
      */
-    protected function pushCms($protocol, $domain, $port)
+    protected function addCmsCommand($protocol, $domain, $port)
     {
         $extra = [
             'protocol' => $protocol,
