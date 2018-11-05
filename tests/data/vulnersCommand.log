@@ -1,0 +1,54 @@
+
+Starting Nmap 7.01 ( https://nmap.org ) at 2018-11-04 15:03 MSK
+Nmap scan report for sometesthost.com (1.1.1.1)
+Host is up (1.0s latency).
+rDNS record for 1.1.1.1: sometesthost.com
+Not shown: 981 closed ports
+PORT     STATE    SERVICE      VERSION
+22/tcp   open     ssh          OpenSSH 6.0p1 Debian 4+deb7u7 (protocol 2.0)
+| vulners: 
+|   cpe:/a:openbsd:openssh:6.0p1: 
+| 	CVE-2016-10708		5		https://vulners.com/cve/CVE-2016-10708
+| 	CVE-2017-15906		5		https://vulners.com/cve/CVE-2017-15906
+| 	CVE-2018-15473		5		https://vulners.com/cve/CVE-2018-15473
+| 	CVE-2016-0778		4.6		https://vulners.com/cve/CVE-2016-0778
+|_	CVE-2016-0777		4		https://vulners.com/cve/CVE-2016-0777
+25/tcp   open     smtp         Exim smtpd 4.80
+| vulners: 
+|   cpe:/a:exim:exim:4.80: 
+| 	CVE-2018-6789		7.5		https://vulners.com/cve/CVE-2018-6789
+| 	CVE-2014-2957		6.8		https://vulners.com/cve/CVE-2014-2957
+| 	CVE-2012-5671		6.8		https://vulners.com/cve/CVE-2012-5671
+|_	CVE-2014-2972		4.6		https://vulners.com/cve/CVE-2014-2972
+53/tcp   open     domain
+80/tcp   open     http         nginx
+|_http-server-header: nginx
+110/tcp  open     pop3         Dovecot pop3d
+135/tcp  filtered msrpc
+139/tcp  filtered netbios-ssn
+143/tcp  open     imap         Dovecot imapd
+443/tcp  open     ssl/http     nginx
+|_http-server-header: nginx
+445/tcp  filtered microsoft-ds
+465/tcp  open     ssl/smtp     Exim smtpd 4.80
+| vulners: 
+|   cpe:/a:exim:exim:4.80: 
+| 	CVE-2018-6789		7.5		https://vulners.com/cve/CVE-2018-6789
+| 	CVE-2014-2957		6.8		https://vulners.com/cve/CVE-2014-2957
+| 	CVE-2012-5671		6.8		https://vulners.com/cve/CVE-2012-5671
+|_	CVE-2014-2972		4.6		https://vulners.com/cve/CVE-2014-2972
+587/tcp  open     smtp         Exim smtpd 4.80
+| vulners: 
+|   cpe:/a:exim:exim:4.80: 
+| 	CVE-2018-6789		7.5		https://vulners.com/cve/CVE-2018-6789
+| 	CVE-2014-2957		6.8		https://vulners.com/cve/CVE-2014-2957
+| 	CVE-2012-5671		6.8		https://vulners.com/cve/CVE-2012-5671
+|_	CVE-2014-2972		4.6		https://vulners.com/cve/CVE-2014-2972
+993/tcp  open     ssl/imap     Dovecot imapd
+995/tcp  open     ssl/pop3     Dovecot pop3d
+1080/tcp filtered socks
+1500/tcp open     ssl/vlsi-lm?
+5222/tcp filtered xmpp-client
+6666/tcp filtered irc
+6667/tcp filtered irc
+Nmap done: 1 IP address (1 host up) scanned in 167.98 seconds

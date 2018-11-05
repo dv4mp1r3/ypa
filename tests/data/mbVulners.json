@@ -1,0 +1,8 @@
+{
+  "taskId": 6,
+  "domain": "sometesthost.com",
+  "command": "app\\models\\commands\\VulnersCommand",
+  "extra": {
+    "previousCommand": null
+  }
+}
