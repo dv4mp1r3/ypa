@@ -15,7 +15,7 @@ class TaskProcessor extends AbstractPayload
     
     /**
      * 
-     * @param PhpAmqpLib\Message\AMQPMessage $message
+     * @param AMQPMessage $message
      */
     public function execute($message)
     {
