@@ -12,13 +12,13 @@ abstract class AbstractPayload
     
     /**
      *
-     * @var PhpAmqpLib\Connection\AMQPStreamConnection; 
+     * @var AMQPStreamConnection;
      */
     protected $connection;
     
     /**
      * 
-     * @param PhpAmqpLib\Connection\AMQPStreamConnection; $connection
+     * @param AMQPStreamConnection; $connection
      */
     public function setConnection($connection)
     {
@@ -36,7 +36,7 @@ abstract class AbstractPayload
 
     /**
      * 
-     * @param PhpAmqpLib\Message\AMQPMessage $message
+     * @param AMQPMessage $message
      */
     abstract public function execute($message);
 
@@ -48,7 +48,7 @@ abstract class AbstractPayload
     
     /**
      * 
-     * @param PhpAmqpLib\Message\AMQPMessage $message
+     * @param AMQPMessage $message
      * @param mixed $data
      */
     protected function sendSuccess($message, $data = null)

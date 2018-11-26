@@ -22,7 +22,7 @@ class WpscanCommand extends AbstractCommand
             if ($this->lineBeginsAt($line, self::CODE_VULNERABILITY))
             {
                 $noticeStr = str_replace(self::CODE_VULNERABILITY, '', $line); 
-                $this->pushNotification(0, 0, $noticeStr);
+                $this->saveNotificationToDB(0, 0, $noticeStr);
             }
             else if ($this->lineBeginsAt($line, self::CODE_WARNING))
             {
@@ -31,7 +31,7 @@ class WpscanCommand extends AbstractCommand
         }        
         if (count($noticeData) > 0)
         {
-            $this->pushNotification(0, 0, ['data' => $noticeData]);
+            $this->saveNotificationToDB(0, 0, ['data' => $noticeData]);
         }
     }
 

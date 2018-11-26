@@ -114,7 +114,7 @@ abstract class AbstractCommand
      * @return int
      * @throws \Exception
      */
-    protected function pushNotification($type, $level, $extra = null)
+    protected function saveNotificationToDB($type, $level, $extra = null)
     {
         $n = new Notification();
         $n->task_id = $this->taskId;
