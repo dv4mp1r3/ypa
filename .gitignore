@@ -28,6 +28,6 @@ phpunit.phar
 
 #yii2 folders
 runtime
-tests
+tests/codeception
 web/assets
 /config/cookieValidationKey.php

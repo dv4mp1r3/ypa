@@ -35,11 +35,13 @@ class NmapCommand extends AbstractCommand
                     $this->debugPrint("on $this->host found new HTTP server");
                     $this->addHeartbleederCommand($this->domain, $port);
                     $this->addCmsCommand(self::PROTOCOL_HTTPS, $this->domain, $port);
+                    $this->addDirParserCommand(self::PROTOCOL_HTTPS, $this->domain);
                 }
                 else if (strpos($line, self::PROTOCOL_HTTP))
                 {
                     $this->debugPrint("on $this->host found new HTTPS server");
                     $this->addCmsCommand(self::PROTOCOL_HTTP, $this->domain, $port);
+                    $this->addDirParserCommand(self::PROTOCOL_HTTP, $this->domain);
                 }
             }
             else if ((strpos($line, 'open') !== false || strpos($line, 'filtered') !== false)
@@ -47,6 +49,7 @@ class NmapCommand extends AbstractCommand
             {
                 $this->addHydraCommand('ssh', $this->domain, $port);
             }
+
         }
     }
 
@@ -113,6 +116,20 @@ class NmapCommand extends AbstractCommand
             'domain' => $domain,
             'path' => '',
             'port' => $port
+        ];
+        $message = $this->publisher->buildMessage(
+            $this->taskId,
+            $domain,
+            PhpmyadminCommand::class,
+            $extra
+        );
+        $this->publisher->publishMessage($message, self::RABBIT_EXCHANGE_DEFAULT);
+    }
+    protected function addDirParserCommand($protocol, $domain)
+    {
+
+        $extra = [
+            'url' => "$protocol://$domain",
         ];
         $message = $this->publisher->buildMessage(
             $this->taskId,
