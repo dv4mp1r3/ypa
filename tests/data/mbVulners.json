@@ -1,8 +1,9 @@
 {
   "taskId": 6,
   "domain": "sometesthost.com",
-  "command": "app\\models\\commands\\VulnersCommand",
+  "command": "app\\models\\commands\\HydraCommand",
   "extra": {
+    "userList" : "/path/to/userlist.txt",
     "previousCommand": null
   }
 }

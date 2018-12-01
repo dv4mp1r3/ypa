@@ -54,7 +54,10 @@ abstract class AbstractPayload
     protected function sendSuccess($message, $data = null)
     {
         $this->afterExecute($data);
-        $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+        if (!empty($message->delivery_info) && array_key_exists('channel', $message->delivery_info))
+        {
+            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+        }
     }
     
     /**
