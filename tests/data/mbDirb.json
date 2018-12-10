@@ -1,6 +1,6 @@
 {
   "taskId": 6,
-  "domain": "https://dfvgbh.com/",
+  "domain": "https://dfvgbh.com1/",
   "command": "app\\models\\commands\\DirParserCommand",
   "extra": {
     "previousCommand": null
