@@ -1,6 +1,6 @@
 **How it works**
 
-Available [here](https://github.com/dv4mp1r3/ypa/blob/master/md/assets/readme.md) on russian
+Available [here](https://github.com/dv4mp1r3/ypa/blob/master/assets/md/readme.md) on russian
 
 
 **Setup environment (Ubuntu 16.04)**
