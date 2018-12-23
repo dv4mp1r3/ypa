@@ -23,7 +23,8 @@
         "yiisoft/yii2-swiftmailer": "*",
         "php-amqplib/php-amqplib": "2.6.*",
         "fxp/composer-asset-plugin": "^1.4",
-        "Detect-CMS":"1.0.*"
+        "Detect-CMS":"1.0.*",
+        "kartik-v/yii2-markdown": "dev-master"
     },
     "require-dev": {
         "codeception/codeception": "*",
